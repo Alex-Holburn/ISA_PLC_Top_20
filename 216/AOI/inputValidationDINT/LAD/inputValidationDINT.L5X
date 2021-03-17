@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--DINT Input Validation V 1.0-->
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="30.02" TargetName="inputValidationDINT" TargetType="AddOnInstructionDefinition" TargetRevision="1.0 " TargetLastEdited="2021-03-17T08:57:14.009Z" ContainsContext="true" Owner="Fake Name, Fake Company" ExportDate="Wed Mar 17 01:57:44 2021" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Context" Name="AOI_Dev_Environment">
+<DataTypes Use="Context">
+</DataTypes>
+<AddOnInstructionDefinitions Use="Context">
+<AddOnInstructionDefinition Use="Target" Name="inputValidationDINT" Revision="1.0" Vendor="Alex Holburn" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="false" CreatedDate="2021-03-16T08:24:33.341Z" CreatedBy="fakePC\fakeuser" EditedDate="2021-03-17T08:57:14.009Z" EditedBy="fakePC\fakeuser"
+ SoftwareRevision="v30.02">
+<Description>
+<![CDATA[DINT Input Validation]]>
+</Description>
+<RevisionNote>
+<![CDATA[Rev 1: Initial Release]]>
+</RevisionNote>
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="minEngValue" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Minimum Engineering Value]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="maxEngValue" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Maximum Engineering Value]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="checkValue" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="outOfRangeHi" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Input Value out of range [high]]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="outOfRangeLo" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Input Value out of range [low]]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="validatedValue" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Validated DINT]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="failedValue" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Last failed validation value.]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+</Parameters>
+<LocalTags>
+<LocalTag Name="maxDINT" DataType="DINT" Radix="Decimal" ExternalAccess="None">
+<Description>
+<![CDATA[Maximum value of a DINT [2147483647]]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</LocalTag>
+<LocalTag Name="minDINT" DataType="DINT" Radix="Decimal" ExternalAccess="None">
+<Description>
+<![CDATA[Minimum value of a DINT [-21474836247]]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</LocalTag>
+</LocalTags>
+<Routines>
+<Routine Name="Logic" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[********************************************************************************************************************
+inputValidationDINT
+Version 1.0
+Author: Alex Holburn
+Website https://www.alexholburn.com
+License: MIT, Copyright Alex Holburn 2021
+
+The purpose of this AOI is to function as an open source method to provide semantic input
+validation for the DINT datatype within the CLX series of processors.
+
+This AOI is part of the ISA PLC Top 20 Project for secure PLC programming practices.
+********************************************************************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Comment>
+<![CDATA[-------------------------------------------------------------------------------
+Set the maximum and minimum validation values for a DINT
+to combat buffer overflows
+-------------------------------------------------------------------------------]]>
+</Comment>
+<Text>
+<![CDATA[[MOV(2147483647,maxDINT) ,MOV(-2147483647,minDINT) ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Comment>
+<![CDATA[-----------------------------------------------------------------------------
+Check for the value being validated to be out of range high
+and set a bit to act as a warning
+-----------------------------------------------------------------------------]]>
+</Comment>
+<Text>
+<![CDATA[[GRT(checkValue,maxDINT) ,GRT(checkValue,maxEngValue) ]OTE(outOfRangeHi);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Comment>
+<![CDATA[-----------------------------------------------------------------------------
+Check for the value being validated to be out of range low
+and set a bit to act as a warning
+-----------------------------------------------------------------------------]]>
+</Comment>
+<Text>
+<![CDATA[[LES(checkValue,minDINT) ,LES(checkValue,minEngValue) ]OTE(outOfRangeLo);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Comment>
+<![CDATA[-----------------------------------------------------------------------------
+If the DINT is a valid input value [not out of range high or low] 
+move it into the validated value. 
+-----------------------------------------------------------------------------]]>
+</Comment>
+<Text>
+<![CDATA[XIO(outOfRangeHi)XIO(outOfRangeLo)MOV(checkValue,validatedValue);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Comment>
+<![CDATA[-----------------------------------------------------------------------------
+If the DINT is not a valid input value [out of range high or low] 
+move it into the failed value for engineering to investigate. 
+-----------------------------------------------------------------------------]]>
+</Comment>
+<Text>
+<![CDATA[[XIC(outOfRangeHi) ,XIC(outOfRangeLo) ]MOV(checkValue,failedValue);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+</Routines>
+</AddOnInstructionDefinition>
+</AddOnInstructionDefinitions>
+</Controller>
+</RSLogix5000Content>
